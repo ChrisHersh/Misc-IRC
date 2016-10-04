@@ -7,9 +7,9 @@ import (
 	"regexp"
 )
 
-const hostname = "luna.red"
-const port = "44444"
-const password = "bokunopico911"
+const hostname = ""
+const port = ""
+const password = ""
 
 var channels = [...]string{
 	"#nickbot",
