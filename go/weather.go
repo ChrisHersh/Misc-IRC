@@ -45,7 +45,7 @@ func printWeatherData(conn net.Conn, channel string, msg string) {
 		location = args[2]
 	}
 
-	url := fmt.Sprintf("http://api.wunderground.com/api/adf6777d45cfb088/conditions/q/%s/%s.json", state, location)
+	url := fmt.Sprintf("http://api.wunderground.com/api/<api_key>/conditions/q/%s/%s.json", state, location)
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Println("ERROR getting data from : " + url)
