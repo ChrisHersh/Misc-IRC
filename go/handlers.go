@@ -3,8 +3,12 @@ package main
 import (
 	"fmt"
 	"net"
+//	"regexp"
 	"strings"
+	"time"
 )
+
+var lastCheckem int64 = time.Now().Unix()
 
 func pingHandler(conn net.Conn, args []string) {
 	code := args[1]
@@ -36,6 +40,8 @@ func privHandler(conn net.Conn, args []string) {
 
 	responseDest := dest
 
+	//dubs := regexp.MustCompile(`<.*>: \d{10}\. checked\. \+\d+`)
+
 	if dest == nickname {
 		responseDest = nick
 	}
@@ -49,6 +55,19 @@ func privHandler(conn net.Conn, args []string) {
 		conn.Close()
 	case checkWeatherCommand(mesg):
 		printWeatherData(conn, responseDest, mesg)
+	//case dubs.MatchString(mesg):
+	//	if lastCheckem < time.Now().Unix() {
+	//		sendPrivMsg(conn, responseDest, "!checkem -- blame joss")
+	//		lastCheckem = time.Now().Unix() + 1
+	//	}
+    case strings.Contains(mesg, "!count"):
+        count, err := getUpdateCount()
+        if err != nil {
+            sendPrivMsg(conn, responseDest, "Error connecting to database")
+            fmt.Println(err)
+        } else {
+            sendPrivMsg(conn, responseDest ,"Current count is: " + fmt.Sprint(count))
+        }
 	}
 
 }
@@ -70,11 +89,19 @@ func comdHandler(conn net.Conn, args []string) {
 }
 
 func joinHandler(conn net.Conn, args []string) {
-	//nick := args[1]
+	nick := args[1]
 	//user := args[2]
 	//host := args[3]
-	//channel := args[4]
+	channel := args[4]
 	fmt.Println("~~~Join Handler")
+	if strings.Contains(strings.ToLower(nick), "satan") {
+		sendPrivMsg(conn, channel, "HAIL SCIENCE")
+	fmt.Println("~~~Sent Hail")
+	} else {
+		sendPrivMsg(conn, channel, "Hi "+nick+"!")
+	fmt.Println("~~~Sent Hi")
+	}
+
 }
 
 func quitHandler(conn net.Conn, args []string) {
